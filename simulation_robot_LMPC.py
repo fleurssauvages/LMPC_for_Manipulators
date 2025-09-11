@@ -20,6 +20,7 @@ T_ini = panda.fkine(panda.q)
 Tdes = panda.fkine(panda.q)
 target = sg.Sphere(radius=0.02, pose=Tdes, color=[0,1,0])
 env.add(target)
+env.set_camera_pose([1.0, 1.0, 0.7], [0, 0, 0.4])
 
 # Init LMPC solver for path planning, gamma the gain of the controller (like K in proportionnal), the lower the faster
 lmpc_solver = LinearMPCController(horizon=20, dt=dt, gamma=0.1,
