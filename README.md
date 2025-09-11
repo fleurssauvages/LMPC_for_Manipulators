@@ -1,36 +1,105 @@
-# LMPC for Robotic Manipulators Project
+# 🤖 LMPC for Robotic Manipulators
 
-## Overview
-This project simulates Quadratic Programming (QP) and Linear Model Predictive Control (MPC) for robotic manipulators.
-LMPC is used for path planning.
-QP to solve Inverse Kinematics (IK) with constraints (joint limits for example).
-The LMPC problem assembly is based from Alberto, Nicolas Torres, et al. "Linear Model Predictive Control in SE (3) for online trajectory planning in dynamic workspaces." (2022).
-https://hal.science/hal-03790059/document
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Dependencies](https://img.shields.io/badge/dependencies-numpy%2C%20roboticstoolbox--python-green)](https://pypi.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Installation
-To install the necessary dependencies, run:
-pip install roboticstoolbox-python, numpy
+This project demonstrates **Quadratic Programming (QP)** and **Linear Model Predictive Control (LMPC)** for robotic manipulators.  
+- **LMPC** is used for online path planning in dynamic workspaces.  
+- **QP** solves Inverse Kinematics (IK) with constraints such as joint limits.  
 
-An example for teleoperation uses mediapipe and opencv to map the hand motion to the robot motion:
-pip install mediapipe, opencv-python
+The LMPC problem formulation is based on:  
+> Alberto, Nicolas Torres, et al.  
+> ["Linear Model Predictive Control in SE(3) for online trajectory planning in dynamic workspaces."](https://hal.science/hal-03790059/document) (2022)
 
-## Run
-simulation_robot.py is a basic proportionnal controller K
-simulation_robot_QP.py is a QP controller in velocity for Inverse Kinematics with joint limits, null-space task, manipulability maximization, Weighted Jacobian.
-simulation_robot_LMPC.py adds a Linear MPC for path planning, with the QP for IK
-simulation_robot_hand_teleop.py uses mediapipe to create a direct one-to-one teleoperation regarding the hand captured by the webcam.
+---
+
+## ⚡ Installation
+
+Clone the repository and install the required dependencies:
+
+```bash
+pip install roboticstoolbox-python numpy
+```
+
+For the teleoperation demo (hand tracking via webcam):
+
+```bash
+pip install mediapipe opencv-python
+```
+
+---
+
+## 🚀 Run the Simulations
+
+- **Proportional Control**  
+  ```bash
+  python simulation_robot.py
+  ```
+  A basic proportional controller.
+
+- **QP Solver for IK**  
+  ```bash
+  python simulation_robot_QP.py
+  ```
+  QP controller in velocity for Inverse Kinematics with joint limits, null-space tasks, manipulability maximization, and weighted Jacobians.
+
+- **LMPC + QP for Path Planning**  
+  ```bash
+  python simulation_robot_LMPC.py
+  ```
+
+- **Hand Teleoperation with LMPC**  
+  ```bash
+  python simulation_robot_hand_teleop.py
+  ```
+  Uses Mediapipe to map real-time hand motion (via webcam) to robot motion.
+
+---
+
+## 📂 Project Structure
+
+```
+├── images/                         # Demo GIFs
+│   ├── QP.gif
+│   ├── LMPC.gif
+│   └── Teleop.gif
+├── simulation_robot.py             # Basic proportional controller
+├── simulation_robot_QP.py          # QP IK solver with constraints
+├── simulation_robot_LMPC.py        # LMPC + QP for path planning
+├── simulation_robot_hand_teleop.py # Hand teleoperation with LMPC
+├── README.md                       # Project documentation
+└── LICENSE                         # License file
+```
+
+---
 
 ## 🎥 Demos
 
 <div align="center">
 
-### QP Solver
-<img src="images/QP.gif" width="800" alt="QP Solver">
+### 🔹 QP Solver
+<img src="images/QP.gif" width="600" alt="QP Solver">
 
-### LMPC
-<img src="images/LMPC.gif" width="800" alt="LMPC">
+---
 
-### Hand Teleoperation with LMPC
-<img src="images/Teleop.gif" width="800" alt="Hand Teleoperation with LMPC">
+### 🔹 LMPC
+<img src="images/LMPC.gif" width="600" alt="LMPC">
+
+---
+
+### 🔹 Hand Teleoperation with LMPC
+<img src="images/Teleop.gif" width="600" alt="Hand Teleoperation with LMPC">
 
 </div>
+
+---
+
+## 📜 License
+This project is licensed under the [MIT License](LICENSE).  
+
+---
+
+## ⭐ Acknowledgments
+- Inspired by the work of Alberto, Nicolas Torres, et al. (2022).  
+- Built with [Robotics Toolbox for Python](https://github.com/petercorke/robotics-toolbox-python).  
