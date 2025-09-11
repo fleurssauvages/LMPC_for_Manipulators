@@ -28,7 +28,7 @@ qp_solver = QPController(panda)
 qp_solver.solve(np.zeros((6,1)))
 
 # Init LMPC solver for path planning, gamma the gain of the controller (like K in proportionnal), the lower the faster
-lmpc_solver = LinearMPCController(horizon=12, dt=0.05, gamma=0.1,
+lmpc_solver = LinearMPCController(horizon=12, dt=0.05, gamma=0.2,
                                     u_min=np.array([-0.5, -0.5, -0.5, -1.0, -1.0, -1.0]),
                                     u_max=np.array([ 0.8,  0.8,  0.8,  1.0,  1.0,  1.0]))
 
