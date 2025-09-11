@@ -29,7 +29,9 @@ class QPController:
         xdot the desired end-effector velocity (6D vector)
         alpha the weight on the secondary task (minimize joint velocities)
         beta the weight on maximizing manipulability
-        The weight matrix W can be used to prioritize translation over rotation or vice-versa
+        The weight matrix W can be used to prioritize translation over rotation or vice-versa,
+        if translations are prioritize, set higher values on the first 3 diagonal elements
+        do not put equal values for all three higher values, to avoid singularities and divergence in certain scenarios
         """
         self.update_IK_problem(xdot, alpha=alpha, beta=beta, W = W)
         self.update_joints_limits(self.joints_limits)
