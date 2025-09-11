@@ -43,7 +43,7 @@ class QPController:
         self.joint_velocities = robot.qd
         pass
     
-    def update_IK_problem(self, xdot, alpha=0.02, beta=0.01):
+    def update_IK_problem(self, xdot, alpha=0.02, beta=0.01, W=np.diag([1.0, 1.0, 1.0, 0.1, 0.1, 0.1]), damping=1e-6):
         """
         Update the IK problem parameters based on desired end-effector velocity (6D vector) and current joint positions
         xdot: np.array of shape (6,)
@@ -51,10 +51,18 @@ class QPController:
         The cost-function solved is ||J qdot - xdot||^2 + alpha ||N qdot||^2
         Nullspace solved with secondary task of minimizing joint velocities and keeping elbow at 0 position (gain alpha)
         And maximizing manipulability (gain beta)
+        The weight matrix W can be used to prioritize translation over rotation or vice-versa
         """
+        def weighted_damped_pinv(J, W, damping=1e-6):
+            # Solve min || W (J dq - xdot) ||^2  => dq = (J^T W^T W J + damping I)^{-1} J^T W^T W xdot
+            JT_WTW_J = J.T @ (W.T @ W) @ J
+            inv = np.linalg.inv(JT_WTW_J + damping * np.eye(J.shape[1]))
+            J_pinv_w = inv @ J.T @ (W.T @ W)
+            return J_pinv_w
+
         I = np.eye(self.n_dof)
         J = self.robot.jacobe(self.joint_positions)
-        Jpinv = np.linalg.pinv(J)
+        Jpinv = weighted_damped_pinv(J, W, damping=damping) # Damped pseudo-inverse of J with weight W, damping to avoid singularities
         
         N = I - Jpinv @ J
         qdot_des = np.zeros(self.n_dof)
@@ -75,8 +83,8 @@ class QPController:
                 grad[i] = (w1 - w0) / delta
             return grad
         
-        self.g = -2 * xdot.T @ J - 2 * qdot_des.T @ (N.T @ N) * alpha - 2 * manipulability_gradient(self.joint_positions).T @ (N.T @ N) * beta
-        self.H = 2 * (N.T @ N * alpha + J.T @ J)
+        self.g = -2 * xdot.T @ (W.T @ W) @ J - 2 * qdot_des.T @ (N.T @ N) * alpha - 2 * manipulability_gradient(self.joint_positions).T @ (N.T @ N) * beta
+        self.H = 2 * (N.T @ N * alpha + J.T @ (W.T @ W) @ J)
         pass
         
     def add_constraint(self, A, b):
