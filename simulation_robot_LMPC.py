@@ -23,7 +23,7 @@ env.add(target)
 env.set_camera_pose([1.0, 1.0, 0.7], [0, 0, 0.4])
 
 # Init LMPC solver for path planning, gamma the gain of the controller as it ensures slows commands u, the lower the faster
-lmpc_solver = LinearMPCController(horizon=12, dt=dt, gamma = 0.001,
+lmpc_solver = LinearMPCController(horizon=25, dt=dt, gamma = 0.001,
                                     u_min=np.array([-0.5, -0.5, -0.5, -1.0, -1.0, -1.0]),
                                     u_max=np.array([ 0.5,  0.5,  0.5,  1.0,  1.0,  1.0]))
 
