@@ -18,4 +18,17 @@ simulation_robot_QP.py is a QP controller in velocity for Inverse Kinematics wit
 simulation_robot_LMPC.py adds a Linear MPC for path planning, with the QP for IK
 simulation_robot_hand_teleop.py uses mediapipe to create a direct one-to-one teleoperation regarding the hand captured by the webcam.
 
-## Example
+## 🎥 Demos
+
+<div align="center">
+
+### QP Solver
+<img src="images/QP.gif" width="800" alt="QP Solver">
+
+### LMPC
+<img src="images/LMPC.gif" width="800" alt="LMPC">
+
+### Hand Teleoperation with LMPC
+<img src="images/Teleop.gif" width="800" alt="Hand Teleoperation with LMPC">
+
+</div>

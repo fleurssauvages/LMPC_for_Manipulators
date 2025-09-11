@@ -2,6 +2,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 from qpsolvers import solve_qp
 import scipy.sparse as sp
+from scipy.linalg import block_diag
 
 """ ------------------------
 MPC problem assembly based from 
@@ -47,21 +48,24 @@ class LinearMPCController:
         des_pose = np.array(des_pose)
         
         # Linearize the poses in the tangent space with dlog
-        Xl_inv = np.linalg.inv(des_pose)  # Convert poses to tangent space
-        xi_current = se3_log(Xl_inv @ ini_pose)
-        xi_des = np.zeros(6)   
+        Xc_inv = np.linalg.inv(ini_pose)
+        xi_current = se3_log(np.eye(4))
+        xi_des = se3_log(Xc_inv @ des_pose)
         dlog = compute_dlog_approx(xi_current) # Linearization dlog at xi_current
 
         # Build big matrices, A = I6, B = dlog * dt
-        A_big = np.eye(self.n*self.horizon)
-        B_big = np.kron(np.tril(np.ones((self.horizon, self.horizon))), dlog * self.dt)
+        A_big = np.eye(self.n * self.horizon)
+        singleB = compute_dlog_approx(xi_current) * self.dt  # (6x6)
+        B_big = np.kron(np.tril(np.ones((self.horizon, self.horizon))), singleB)  # (6h x 6h)
+        
         Xd = np.tile(xi_des, self.horizon)
+        Xprev = np.tile(xi_current, self.horizon)
 
         # Cost: (A_big x0 + B_big U - Xd)^T (A_big x0 + B_big U - Xd) + gamma * U^T U
         # Variable is stacked X_pred(= A_big @ np.tile(x0, h) + B_big @ U) and U
         # Formulation according to QP, see QP for more details
         self.H = 2 * (B_big.T @ B_big + self.gamma * np.eye(self.n*self.horizon))
-        self.g = 2 * (B_big.T @ (A_big @ np.tile(xi_current, self.horizon) - Xd))
+        self.g = 2 * (B_big.T @ (A_big @ Xprev - Xd))
         
         # Constraints on U
         if self.u_min is not None:
@@ -74,13 +78,14 @@ class LinearMPCController:
             A=sp.csc_matrix(self.eqA), b=self.eqb, lb=self.lb, ub=self.ub, solver="osqp", initvals=self.solution)
         self.solution = Uopt
         
-        Xopt = (A_big @ np.tile(xi_current, self.horizon) + B_big @ Uopt).reshape(self.horizon, self.n)
+        Xopt = (A_big @ Xprev + B_big @ Uopt).reshape(self.horizon, self.n)
         
         # Convert predicted x sequence back to poses
         T = ini_pose
         poses = [T]
         for i in range(self.horizon):
-            T = T @ se3_exp(Uopt[self.n*i:self.n*(i+1)] * self.dt)
+            u_i = Uopt[self.n*i:self.n*(i+1)]
+            T = T @ se3_exp(dlog @ u_i * self.dt)
             poses.append(T)
         return Uopt, Xopt, poses
 
@@ -90,24 +95,24 @@ class LinearMPCController:
 
 def example():
     # Current pose: identity slightly translated/rotated
-    cur_pos = np.array([0.2, 0.0, 0.3])
+    cur_pos = np.array([0.4, 0.0, 0.4])
     cur_quat = np.array([0.0, 0.0, 0.0, 1.0])  # x,y,z,w
-    Tcur = pose_to_matrix(cur_pos, cur_quat)
-    p, q = matrix_to_pose(Tcur)
+    T_ini = pose_to_matrix(cur_pos, cur_quat)
+    p, q = matrix_to_pose(T_ini)
     print(f" Initial: pos = {p}, quat = {q}")
 
     # Target pose: rotated 45deg around z, translated
-    tgt_pos = np.array([0.6, -0.1, 0.4])
+    tgt_pos = np.array([0.4, 0.0, 1.5])
     tgt_quat = R.from_euler('z', 45, degrees=True).as_quat()
-    Ttgt = pose_to_matrix(tgt_pos, tgt_quat)
-    p, q = matrix_to_pose(Ttgt)
+    T_des = pose_to_matrix(tgt_pos, tgt_quat)
+    p, q = matrix_to_pose(T_des)
     print(f" Desired: pos = {p}, quat = {q}")
 
     # run one MPC step
-    lmpc_solver = LinearMPCController(horizon=12, dt=0.05, 
+    lmpc_solver = LinearMPCController(horizon=100, dt=0.05, gamma = 0.001,
                                     u_min=np.array([-0.5, -0.5, -0.5, -1.0, -1.0, -1.0]),
-                                    u_max=np.array([ 0.8,  0.8,  0.8,  1.0,  1.0,  1.0]))
-    Uopt, Xopt, poses = lmpc_solver.solve(Tcur, Ttgt)
+                                    u_max=np.array([ 0.5,  0.5,  0.5,  1.0,  1.0,  1.0]))
+    Uopt, Xopt, poses = lmpc_solver.solve(T_ini, T_des)
     
     print("\nPredicted poses:")
     for i, T in enumerate(poses):

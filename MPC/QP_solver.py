@@ -21,7 +21,7 @@ class QPController:
         self.dt = dt # Time step of the controller loop / simulation
         self.solution = None
 
-    def solve(self, xdot, alpha=0.02, beta=0.01, W = np.diag([1.0, 1.0, 5.0, 0.3, 0.3, 0.3])):
+    def solve(self, xdot, alpha=0.02, beta=0.01, W = np.diag([1.0, 1.0, 2.0, 0.1, 0.1, 0.1])):
         """
         Solve the quadratic programming problem using previous solution as initial value
         Minimize the cost function ||J qdot - xdot||^2 + alpha ||N qdot||^2 - beta * manipulability_gradient * qdot
@@ -31,7 +31,6 @@ class QPController:
         beta the weight on maximizing manipulability
         The weight matrix W can be used to prioritize translation over rotation or vice-versa,
         if translations are prioritize, set higher values on the first 3 diagonal elements
-        do not put equal values for all three higher values, to avoid singularities and divergence in certain scenarios
         """
         self.update_IK_problem(xdot, alpha=alpha, beta=beta, W = W)
         self.update_joints_limits(self.joints_limits)
