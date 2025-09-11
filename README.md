@@ -4,6 +4,8 @@
 This project simulates Quadratic Programming (QP) and Linear Model Predictive Control (MPC) for robotic manipulators.
 LMPC is used for path planning.
 QP to solve Inverse Kinematics (IK) with constraints (joint limits for example).
+The LMPC problem assembly is based from Alberto, Nicolas Torres, et al. "Linear Model Predictive Control in SE (3) for online trajectory planning in dynamic workspaces." (2022).
+https://hal.science/hal-03790059/document
 
 ## Installation
 To install the necessary dependencies, run:
