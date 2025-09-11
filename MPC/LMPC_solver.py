@@ -43,6 +43,9 @@ class LinearMPCController:
         u_min/u_max: (6,) or arrays of length 6*h
         Returns optimal U (stacked) and the predicted X sequence.
         """
+        ini_pose = np.array(ini_pose)
+        des_pose = np.array(des_pose)
+        
         # Linearize the poses in the tangent space with dlog
         Xl_inv = np.linalg.inv(des_pose)  # Convert poses to tangent space
         xi_current = se3_log(Xl_inv @ ini_pose)

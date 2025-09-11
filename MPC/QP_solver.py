@@ -21,7 +21,7 @@ class QPController:
         self.dt = dt # Time step of the controller loop / simulation
         self.solution = None
 
-    def solve(self, xdot, alpha=0.02, beta=0.01):
+    def solve(self, xdot, alpha=0.02, beta=0.01, W = np.diag([1.0, 1.0, 10.0, 0.1, 0.1, 0.1])):
         """
         Solve the quadratic programming problem using previous solution as initial value
         Minimize the cost function ||J qdot - xdot||^2 + alpha ||N qdot||^2 - beta * manipulability_gradient * qdot
@@ -29,8 +29,9 @@ class QPController:
         xdot the desired end-effector velocity (6D vector)
         alpha the weight on the secondary task (minimize joint velocities)
         beta the weight on maximizing manipulability
+        The weight matrix W can be used to prioritize translation over rotation or vice-versa
         """
-        self.update_IK_problem(xdot, alpha=alpha, beta=beta)
+        self.update_IK_problem(xdot, alpha=alpha, beta=beta, W = W)
         self.update_joints_limits(self.joints_limits)
         x = solve_qp(sp.csc_matrix(self.H), self.g, G=sp.csc_matrix(self.A), h=self.b, A=sp.csc_matrix(self.eqA), b=self.eqb, lb=self.lb, ub=self.ub, solver="osqp", initvals=self.solution)
         self.solution = x
@@ -43,7 +44,7 @@ class QPController:
         self.joint_velocities = robot.qd
         pass
     
-    def update_IK_problem(self, xdot, alpha=0.02, beta=0.01, W=np.diag([1.0, 1.0, 1.0, 0.1, 0.1, 0.1]), damping=1e-6):
+    def update_IK_problem(self, xdot, alpha=0.02, beta=0.01, W=np.eye(6), damping=1e-6):
         """
         Update the IK problem parameters based on desired end-effector velocity (6D vector) and current joint positions
         xdot: np.array of shape (6,)

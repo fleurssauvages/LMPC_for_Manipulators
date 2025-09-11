@@ -4,7 +4,6 @@ import spatialmath as sm
 import numpy as np
 from MPC.QP_solver import QPController
 import spatialgeometry as sg
-from MPC.LMPC_solver import LinearMPCController
 
 # Init env
 env = swift.Swift()

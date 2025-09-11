@@ -22,7 +22,7 @@ target = sg.Sphere(radius=0.02, pose=Tdes, color=[0,1,0])
 env.add(target)
 
 # Init LMPC solver for path planning, gamma the gain of the controller (like K in proportionnal), the lower the faster
-lmpc_solver = LinearMPCController(horizon=12, dt=0.05, gamma=0.1,
+lmpc_solver = LinearMPCController(horizon=20, dt=dt, gamma=0.5,
                                     u_min=np.array([-0.5, -0.5, -0.5, -1.0, -1.0, -1.0]),
                                     u_max=np.array([ 0.8,  0.8,  0.8,  1.0,  1.0,  1.0]))
 Uopt, Xopt, poses = lmpc_solver.solve(np.array(T_ini), np.array(Tdes))
@@ -53,8 +53,8 @@ env.add(swift.Slider(lambda x: set_z(-x),min=-0.5,max=0.5,step=0.01,desc="z",))
 while True:
     #Compute desired velocity from simple prop controller
     T = panda.fkine(panda.q)
-    Uopt, Xopt, poses = lmpc_solver.solve(np.array(T), np.array(Tdes))
-    _, arrived = rtb.p_servo(panda.fkine(panda.q), Tdes, 1, 0.01)
+    Uopt, Xopt, poses = lmpc_solver.solve(T, Tdes)
+    print("Next target pose:", poses[1])
     
     #Solve QP
     qp_solver.update_robot_state(panda)
