@@ -49,7 +49,7 @@ while True:
     
     #Solve QP
     qp_solver.update_robot_state(panda)
-    qp_solver.solve(v, alpha=0.02, beta=0.001)
+    qp_solver.solve(v, alpha=0.02, beta=0.01)
     panda.qd = qp_solver.solution
     
     #Simulate

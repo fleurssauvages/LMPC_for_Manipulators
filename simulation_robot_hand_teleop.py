@@ -94,7 +94,7 @@ with mp_hands.Hands(
                 
                 #Solve QP
                 qp_solver.update_robot_state(panda)
-                qp_solver.solve(Uopt[0:6], alpha=0.02, beta=0.001)
+                qp_solver.solve(Uopt[0:6], alpha=0.02, beta=0.01)
                 panda.qd = qp_solver.solution
                 
                 #Update Simulation
