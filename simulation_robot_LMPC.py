@@ -5,9 +5,6 @@ import numpy as np
 from MPC.QP_solver import QPController
 import spatialgeometry as sg
 from MPC.LMPC_solver import LinearMPCController
-import time
-import matplotlib.pyplot as plt
-from scipy.spatial.transform import Rotation as R
 
 # Init env
 env = swift.Swift()
