@@ -6,6 +6,8 @@ from MPC.QP_solver import QPController
 import spatialgeometry as sg
 from MPC.LMPC_solver import LinearMPCController
 import time
+import matplotlib.pyplot as plt
+from scipy.spatial.transform import Rotation as R
 
 # Init env
 env = swift.Swift()
@@ -48,7 +50,7 @@ def set_z(z_set):
     z, T_des = float(z_set), T_ini * sm.SE3.Trans(x, y, float(z_set))
     target.T = T_des
 env.add(swift.Slider(lambda x: set_z(-x),min=-0.5,max=0.5,step=0.01,desc="z",))
-    
+
 # Loop
 while True:
     #Compute desired velocity from simple prop controller
@@ -62,4 +64,3 @@ while True:
     
     #Simulate
     env.step(dt)
-    time.sleep(0.1)

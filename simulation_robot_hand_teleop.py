@@ -74,6 +74,8 @@ with mp_hands.Hands(
         # If 'ESC' is pressed, exit the loop
         if cv2.waitKey(5) & 0xFF == 27:
             break
+        if cv2.waitKey(5) & 0xFF == ord('q'):
+            break
         
         #Transform hand into a robot command
         if results.multi_hand_landmarks:
