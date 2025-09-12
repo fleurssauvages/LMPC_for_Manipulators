@@ -102,6 +102,11 @@ pip install mediapipe opencv-python
 ### 🔹Plot with X sin desired target trajectory
 <img src="images/follow_sin.png" width="600" alt="Plot sin trajectory with LMPC">
 
+---
+
+### 🔹Plot with X square desired target trajectory
+<img src="images/follow_square.png" width="600" alt="Plot square trajectory with LMPC">
+
 </div>
 
 ---

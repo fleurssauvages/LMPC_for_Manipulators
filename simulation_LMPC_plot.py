@@ -7,6 +7,7 @@ import spatialgeometry as sg
 from MPC.LMPC_solver import LinearMPCController
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
+from scipy.signal import square
 
 # Init env
 env = swift.Swift()
@@ -14,7 +15,7 @@ env.launch(realtime=True)
 panda = rtb.models.Panda()
 panda.q = panda.qr
 env.add(panda)
-dt = 0.05
+dt = 0.01
 
 # Init desired position
 T_ini = panda.fkine(panda.q)
@@ -39,9 +40,10 @@ t_target_x, t_target_y, t_target_z = [], [], []
 times = []
 
 # Loop
-while env.sim_time < 10:
+while env.sim_time < 5:
     #Compute desired velocity from simple prop controller
     T_des.t[0] = T_ini.t[0] + 0.2 * np.sin(env.sim_time * 2)
+    T_des.t[0] = T_ini.t[0] + square(env.sim_time * 2) * 0.2
     target.T = T_des
     T_current = panda.fkine(panda.q)
     Uopt, Xopt, poses = lmpc_solver.solve(T_current, T_des)
@@ -72,22 +74,22 @@ while env.sim_time < 10:
     #Simulate
     env.step(dt)
     
-
+env.close()
 # Set up dynamic plot
 fig, ax = plt.subplots(figsize=(8,6))
 ax.set_xlabel("Time")
 ax.grid(True)
 
 # Append to lists
-ax.scatter(times, thetas, color='red', label='Rotation (rad)')
-ax.scatter(times, t_x, color='blue', label='X (m)')
-ax.scatter(times, t_y, color='green', label='Y (m)')
-ax.scatter(times, t_z, color='orange', label='Z (m)')
+ax.scatter(times, t_x, color='blue', label='X (m)', s=8)
+ax.scatter(times, t_y, color='green', label='Y (m)', s=8)
+ax.scatter(times, t_z, color='yellow', label='Z (m)', s=8)
+ax.scatter(times, thetas, color='red', label='Rotation (rad)', s=8)
 
-ax.plot(times, thetas_target, 'r--')
-ax.plot(times, t_target_x, 'b--', label = 'X target (m)')
-ax.plot(times, t_target_y, 'g--')
-ax.plot(times, t_target_z, 'orange')
+ax.plot(times, t_target_x, 'b--', label = 'X target (m)', markersize=4)
+ax.plot(times, t_target_y, 'g--', markersize=4)
+ax.plot(times, t_target_z, 'y--', markersize=4)
+ax.plot(times, thetas_target, 'r--', markersize=4)
 ax.legend()
 
 plt.show()
