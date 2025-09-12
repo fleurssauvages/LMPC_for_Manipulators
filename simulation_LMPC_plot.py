@@ -5,7 +5,6 @@ import numpy as np
 from MPC.QP_solver import QPController
 import spatialgeometry as sg
 from MPC.LMPC_solver import LinearMPCController
-import time
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 
@@ -86,7 +85,7 @@ ax.scatter(times, t_y, color='green', label='Y (m)')
 ax.scatter(times, t_z, color='orange', label='Z (m)')
 
 ax.plot(times, thetas_target, 'r--')
-ax.plot(times, t_target_x, 'b--')
+ax.plot(times, t_target_x, 'b--', label = 'X target (m)')
 ax.plot(times, t_target_y, 'g--')
 ax.plot(times, t_target_z, 'orange')
 ax.legend()

@@ -55,6 +55,12 @@ pip install mediapipe opencv-python
   ```
   Uses Mediapipe to map real-time hand motion (via webcam) to robot motion.
 
+- **Hand Teleoperation with LMPC**  
+  ```bash
+  python simulation_LMPC_plot.py
+  ```
+  Simulates for a given time (10s in the example) with a sin desired target X position, and plots using matplotlib
+
 ---
 
 ## 📂 Project Structure
@@ -90,6 +96,11 @@ pip install mediapipe opencv-python
 
 ### 🔹 Hand Teleoperation with LMPC
 <img src="images/Teleop.gif" width="600" alt="Hand Teleoperation with LMPC">
+
+---
+
+### 🔹Plot with X sin desired target trajectory
+<img src="images/follow_sin.png" width="600" alt="Plot sin trajectory with LMPC">
 
 </div>
 
