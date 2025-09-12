@@ -21,7 +21,7 @@ env.add(target)
 
 env.add(panda)
 env.set_camera_pose([1.5, 0.0, 1.0], [0, 0, 0])
-dt = 0.05
+dt = 0.01
 
 #QP solver init
 qp_solver = QPController(panda)

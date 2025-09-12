@@ -12,7 +12,7 @@ env.launch(realtime=True)
 panda = rtb.models.Panda()
 panda.q = panda.qr
 env.add(panda)
-dt = 0.05
+dt = 0.01
 
 # Init desired position
 T_ini = panda.fkine(panda.q)

@@ -14,7 +14,7 @@ Tep = panda.fkine(panda.q) * sm.SE3.Trans(0.2, 0.2, 0.45) * sm.SE3.AngleAxis(np.
 arrived = False
 env.add(panda)
 
-dt = 0.05
+dt = 0.01
 
 while not arrived:
     v, arrived = rtb.p_servo(panda.fkine(panda.q), Tep, 1)
