@@ -28,6 +28,12 @@ For the teleoperation demo (hand tracking via webcam):
 pip install mediapipe opencv-python
 ```
 
+For the plot:
+
+```bash
+pip install matplotlib
+```
+
 ---
 
 ## 🚀 Run the Simulations
@@ -59,7 +65,7 @@ pip install mediapipe opencv-python
   ```bash
   python simulation_LMPC_plot.py
   ```
-  Simulates for a given time (10s in the example) with a sin desired target X position, and plots using matplotlib
+  Simulates for a given time (5s in the example) with a sin desired target X position, and plots using matplotlib
 
 ---
 

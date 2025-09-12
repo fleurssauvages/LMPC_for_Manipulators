@@ -43,7 +43,7 @@ times = []
 while env.sim_time < 5:
     #Compute desired velocity from simple prop controller
     T_des.t[0] = T_ini.t[0] + 0.2 * np.sin(env.sim_time * 2)
-    T_des.t[0] = T_ini.t[0] + square(env.sim_time * 2) * 0.2
+    # T_des.t[0] = T_ini.t[0] + square(env.sim_time * 2) * 0.2
     target.T = T_des
     T_current = panda.fkine(panda.q)
     Uopt, Xopt, poses = lmpc_solver.solve(T_current, T_des)
