@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import swift
 import roboticstoolbox as rtb
 import spatialmath as sm
