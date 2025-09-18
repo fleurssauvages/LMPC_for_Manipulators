@@ -8,7 +8,7 @@ class QPController:
         self.robot = robot
         self.joint_positions = robot.q
         self.joint_velocities = robot.qd
-        self.joints_limits = robot.qlim - 0.5
+        self.joints_limits = robot.qlim + np.array([0.5, -0.5]) @ np.ones((2, robot.n)) # Add some margin to joint limits
         self.joints_velocities_limits = robot.qdlim
         self.H = np.eye(robot.n)  # Hessian
         self.g = np.zeros(robot.n)  # Gradient
