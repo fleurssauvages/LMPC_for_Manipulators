@@ -60,12 +60,17 @@ class LinearMPCController:
         
         Xd = np.tile(xi_des, self.horizon)
         Xprev = np.tile(xi_current, self.horizon)
+        
+        # Cost weights
+        Q = np.eye(6)       # weight for pose error
+        Q_big = block_diag(*[Q for _ in range(self.horizon-1)])  # (12h x 12h)
+        Q_big = block_diag(Q_big, np.eye(6) * 150)  # Final state also considered, strong weight on final pose and velocity
 
         # Cost: (A_big x0 + B_big U - Xd)^T (A_big x0 + B_big U - Xd) + gamma * U^T U
         # Variable is stacked X_pred(= A_big @ np.tile(x0, h) + B_big @ U) and U
         # Formulation according to QP, see QP for more details
-        self.H = 2 * (B_big.T @ B_big + self.gamma * np.eye(self.n*self.horizon))
-        self.g = 2 * (B_big.T @ (A_big @ Xprev - Xd))
+        self.H = 2 * (B_big.T @ Q_big @ B_big + self.gamma * np.eye(self.n*self.horizon))
+        self.g = 2 * (B_big.T @ Q_big @ (A_big @ Xprev - Xd))
         
         # Constraints on U
         if self.u_min is not None:
