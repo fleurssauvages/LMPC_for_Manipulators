@@ -19,7 +19,7 @@ The LMPC problem formulation is based on:
 Clone the repository and install the required dependencies:
 
 ```bash
-pip install roboticstoolbox-python numpy
+pip install roboticstoolbox-python numpy qpsolvers
 ```
 
 For the teleoperation demo (hand tracking via webcam):
