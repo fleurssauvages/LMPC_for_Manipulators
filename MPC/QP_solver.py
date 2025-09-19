@@ -34,6 +34,7 @@ class QPController:
         if translations are prioritize, set higher values on the first 3 diagonal elements
         """
         self.update_IK_problem(xdot, alpha=alpha, beta=beta, W = W)
+        self.add_floor_constraint(z_floor=0.0, margin=0.02)
         self.update_joints_limits(self.joints_limits)
         x = solve_qp(sp.csc_matrix(self.H), self.g, G=sp.csc_matrix(self.A), h=self.b, A=sp.csc_matrix(self.eqA), b=self.eqb, lb=self.lb, ub=self.ub, solver="osqp", initvals=self.solution)
         self.solution = x
@@ -118,4 +119,19 @@ class QPController:
         self.ub = 0.1*(limits[1, :] - self.joint_positions) / self.dt
         self.lb = np.maximum(self.lb, -self.joints_velocities_limits[0:self.n_dof])
         self.ub = np.minimum(self.ub, self.joints_velocities_limits[0:self.n_dof])
+        pass
+    
+    def add_floor_constraint(self, z_floor=0.0, margin=0.02):
+        """ Add a constraint to avoid the end-effector going below z_floor + margin in the next time step """
+        z = self.robot.fkine(self.joint_positions).t[2]
+        
+        J = self.robot.jacobe(self.joint_positions)  # expected shape (6, n)
+        Jz = np.atleast_2d(np.asarray(J[2, :], dtype=float))  # shape (1, n)
+
+        required = (z_floor + margin - z) / float(self.dt)  # scalar
+
+        G = Jz
+        h = np.array([-required], dtype=float)
+
+        self.add_constraint(G, h)
         pass
