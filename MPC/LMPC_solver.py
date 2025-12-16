@@ -77,7 +77,7 @@ class LinearMPCController:
             self.lb = np.tile(self.u_min, self.horizon)
         if self.u_max is not None:
             self.ub = np.tile(self.u_max, self.horizon)
-            
+
         # Solve QP
         Uopt = solve_qp(sp.csc_matrix(self.H), self.g, G=sp.csc_matrix(self.A), h=self.b, \
             A=sp.csc_matrix(self.eqA), b=self.eqb, lb=self.lb, ub=self.ub, solver="osqp", initvals=self.solution)
@@ -93,7 +93,7 @@ class LinearMPCController:
             T = T @ se3_exp(dlog @ u_i * self.dt)
             poses.append(T)
         return Uopt, Xopt, poses
-
+    
 # ------------------------
 # Example
 # ------------------------

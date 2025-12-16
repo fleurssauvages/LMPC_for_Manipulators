@@ -22,7 +22,7 @@ class QPController:
         self.dt = dt # Time step of the controller loop / simulation
         self.solution = None
 
-    def solve(self, xdot, alpha=0.02, beta=0.01, W = np.diag([1.0, 1.0, 2.0, 0.1, 0.1, 0.1])):
+    def solve(self, xdot, alpha=0.02, beta=0.01, W = np.diag([1.0, 1.0, 1.0, 0.1, 0.1, 0.1])):
         """
         Solve the quadratic programming problem using previous solution as initial value
         Minimize the cost function ||J qdot - xdot||^2 + alpha ||N qdot||^2 - beta * manipulability_gradient * qdot
