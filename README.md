@@ -55,6 +55,12 @@ pip install matplotlib
   python simulation_robot_LMPC.py
   ```
 
+  - **LMPC + Obstacles**  
+  ```bash
+  python simulation_LMPC_obstacles.py
+  ```
+  Adds spherical obstacles. To avoid obstacles, a convex polytope is defined as a corridor in which the effector must stay. In this example, the polytope is defined as a corridor around a cubic spline going from the start to the desired end point, such as the corridor avoids the obstacles. A better trajectory can be defined obviously (see my repo on RL and DMP). Only the end effector avoids the obstacles, to add more points (like the Panda's hand or intermediary joints), you need to put them in the QP.
+
 - **Hand Teleoperation with LMPC**  
   ```bash
   python simulation_robot_hand_teleop.py
@@ -80,6 +86,7 @@ pip install matplotlib
 ├── simulation_robot_QP.py          # QP IK solver with constraints
 ├── simulation_robot_LMPC.py        # LMPC + QP for path planning
 ├── simulation_robot_hand_teleop.py # Hand teleoperation with LMPC
+├── simulation_LMPC_obstacles.py    # LMPC with spherical obstacles
 ├── README.md                       # Project documentation
 └── LICENSE                         # License file
 ```
@@ -99,6 +106,12 @@ pip install matplotlib
 <img src="images/LMPC.gif" width="600" alt="LMPC">
 
 ---
+
+### 🔹 LMPC with obstacles
+<img src="images/LMPC_obs.gif" width="600" alt="LMPC">
+
+---
+
 
 ### 🔹 Hand Teleoperation with LMPC
 <img src="images/Teleop.gif" width="600" alt="Hand Teleoperation with LMPC">

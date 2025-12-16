@@ -49,9 +49,9 @@ def set_z(z_set):
     target.T = T_des
 env.add(swift.Slider(lambda x: set_z(-x),min=-0.5,max=0.5,step=0.01,desc="z",))
 
-spheres = [{'center': np.array([0.7, 0.0, 0.4]), 'radius': 0.1},
-           {'center': np.array([0.7, 0.2, 0.4]), 'radius': 0.1},
-           {'center': np.array([0.7, -0.2, 0.4]), 'radius': 0.1}]
+spheres = [{'center': np.array([0.5, 0.0, 0.2]), 'radius': 0.1},
+           {'center': np.array([0.5, 0.2, 0.2]), 'radius': 0.1},
+           {'center': np.array([0.5, -0.2, 0.2]), 'radius': 0.1}]
 
 doMPC = False
 def start_MPC(*args):
