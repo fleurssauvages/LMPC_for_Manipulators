@@ -172,6 +172,10 @@ class LinearMPCController:
             A=sp.csc_matrix(self.eqA), b=self.eqb, lb=self.lb, ub=self.ub, solver="osqp", initvals=self.solution)
         self.solution = Uopt
         
+        if Uopt is None:
+            return None, None, None
+        
+        # Reconstruct predicted X sequence
         Xopt = (A_big @ Xprev + B_big @ Uopt).reshape(self.horizon, self.n)
         
         # Convert predicted x sequence back to poses

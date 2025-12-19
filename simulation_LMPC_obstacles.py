@@ -72,6 +72,12 @@ while True:
     T_current = panda.fkine(panda.q)
     Uopt, Xopt, poses = lmpc_solver.solve(T_current, T_des, obstacles=spheres)
 
+    if Uopt is None:
+        panda.qd = np.zeros((7,1))
+        env.step(dt)
+        print("Infeasible LMPC problem: spline is going through an obstacle / Horizon is too small compared to the distance to cover and the obstacles.")
+        continue
+
     #Solve QP
     qp_solver.update_robot_state(panda)
     qp_solver.solve(Uopt[0:6], alpha=0.02, beta=0.01)
