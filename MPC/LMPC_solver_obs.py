@@ -52,13 +52,13 @@ def corridor_planes_from_spline(
             if d < 1e-6:
                 continue  # degenerate, skip
 
-            n = v / d
+            n = v / d # normal vector
 
             # Build row acting on X (6*horizon)
             row = np.zeros(6 * horizon)
             row[6*k : 6*k+3] = -n
 
-            rhs = -(n @ c + r + margin)
+            rhs = -(n @ c + r + margin) # - (n . c + r + margin) <= -n . x_k i.e the projection of x_k on n is at least r + margin away from center along n
 
             A_x.append(row)
             b_x.append(rhs)
