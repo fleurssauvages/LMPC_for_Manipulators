@@ -89,7 +89,7 @@ class LinearMPCController:
         self.solution = None
         pass
     
-    def solve(self, ini_pose, des_pose, xi0 = None, obstacles=None):
+    def solve(self, ini_pose, des_pose, xi0 = None, obstacles=None, margin=0.05):
         """
         Solve finite-horizon linear MPC:
         minimize ||X - X_des||^2 + gamma ||U||^2
@@ -170,7 +170,7 @@ class LinearMPCController:
                 c_local = R0.T @ (np.asarray(obs["center"]) - p0)
                 obstacles_local.append({"center": c_local, "radius": obs["radius"]})
 
-            A_x, b_x = corridor_planes_from_spline(p_ref, obstacles_local, margin=0.05)
+            A_x, b_x = corridor_planes_from_spline(p_ref, obstacles_local, margin=margin)
 
             if A_x is not None:
                 G_corr = A_x @ B_big
