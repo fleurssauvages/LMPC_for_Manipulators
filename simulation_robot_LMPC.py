@@ -50,10 +50,12 @@ def set_z(z_set):
 env.add(swift.Slider(lambda x: set_z(-x),min=-0.5,max=0.5,step=0.01,desc="z",))
 
 # Loop
+Uopt = np.zeros((6*lmpc_solver.horizon,))
 while True:
     #Compute desired velocity from simple prop controller
     T_current = panda.fkine(panda.q)
-    Uopt, Xopt, poses = lmpc_solver.solve(T_current, T_des)
+    Uopt, Xopt, poses = lmpc_solver.solve(T_current, T_des, xi0=Uopt[0:6])
+    print(Uopt[0:6])
 
     #Solve QP
     qp_solver.update_robot_state(panda)

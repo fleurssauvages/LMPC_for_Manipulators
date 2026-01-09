@@ -64,13 +64,14 @@ for s in spheres:
     env.add(obs)
 
 # Loop
+Uopt = np.zeros((6*lmpc_solver.horizon,))
 while True:
     if doMPC is False:
         env.step(dt)
         continue
     #Compute desired velocity from simple prop controller
     T_current = panda.fkine(panda.q)
-    Uopt, Xopt, poses = lmpc_solver.solve(T_current, T_des, obstacles=spheres)
+    Uopt, Xopt, poses = lmpc_solver.solve(T_current, T_des, obstacles=spheres, xi0=Uopt[0:6])
 
     if Uopt is None:
         panda.qd = np.zeros((7,1))

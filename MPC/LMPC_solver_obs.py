@@ -89,7 +89,7 @@ class LinearMPCController:
         self.solution = None
         pass
     
-    def solve(self, ini_pose, des_pose, obstacles=None):
+    def solve(self, ini_pose, des_pose, xi0 = None, obstacles=None):
         """
         Solve finite-horizon linear MPC:
         minimize ||X - X_des||^2 + gamma ||U||^2
@@ -141,6 +141,18 @@ class LinearMPCController:
         # --- reset each solve (safer) ---
         self.A = np.zeros((0, self.n*self.horizon))
         self.b = np.zeros(0)
+
+        if xi0 is not None and self.u_min is not None and self.u_max is not None:
+            # U0 <= xi0 + du0 where du0 the deviation allowed from current velocity, here du0 = u_max
+            # -U0 <= -(xi0 - du0)
+            G_add = np.zeros((12, self.n * self.horizon))
+            G_add[0:6, 0:6] = np.eye(6)
+            G_add[6:12, 0:6] = -np.eye(6)
+            h_add = np.hstack([xi0 + self.ub[:6], -(xi0 - self.ub[:6])])
+
+            # Append to existing inequalities (self.A, self.b)
+            self.A = G_add
+            self.b = h_add
 
         # build spline in world
         spline = build_spline(ini_pose[:3,3], des_pose[:3,3], T=self.horizon*self.dt)
